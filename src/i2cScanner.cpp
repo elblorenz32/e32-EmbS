@@ -1,4 +1,4 @@
-// --------------------------------------
+//* --------------------------------------
 // i2c_scanner
 //
 // Version 1
@@ -26,7 +26,7 @@
 // This sketch tests the standard 7-bit addresses
 // Devices with higher bit address might not be seen properly.
 //
-
+/*
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -81,4 +81,4 @@ void loop()
     Serial.println("done\n");
 
   delay(5000);           // wait 5 seconds for next scan
-}
+}*/
