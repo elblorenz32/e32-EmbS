@@ -1,9 +1,9 @@
 import json
 import random
 import time
-#from pcf8574 import PCF8574
-#import RPi.GPIO as GPIO
-#GPIO.setmode(GPIO.BOARD)
+from pcf8574 import PCF8574
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BOARD)
 
 json_str = """
 {
@@ -243,9 +243,14 @@ def pushToRAM():
 	unblockI2C() # never forget to unblock the I2C bus!
 
 def main():
-	while True:
-		pushToRAM()
-		time.sleep(20)
+	# while True:
+	# 	pushToRAM()
+	# 	time.sleep(20)
+	blockI2C()
+	setAddr(1)
+	write_int(2)
+	print(read_int())
+	unblockI2C()
 
 if __name__ == "__main__":
 	main()
