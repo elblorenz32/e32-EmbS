@@ -148,10 +148,10 @@ def write_byte(value, addr=None):
 def write_int(data, addr=None):
 	if addr != None:
 		setAddr(addr)
-	write_byte(data >> 8) # high byte
 	addrDec()
 	write_byte(data & 0xFF) # low byte
 	addrInc()
+	write_byte(data >> 8) # high byte
 
 def write_str(data, addr=None, ret=False):
 	addr_tmp = 0
@@ -263,7 +263,7 @@ def main():
 	blockI2C()
 	setAddr(1)
 	write_int(0b1010101010101010)
-	print(bin(read_int()))
+	print(bin(read_int(1)))
 	unblockI2C()
 
 if __name__ == "__main__":
