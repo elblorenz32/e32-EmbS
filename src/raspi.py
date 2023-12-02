@@ -195,7 +195,7 @@ def read_int(addr=None):
 	"""
 	if addr != None:
 		setAddr(addr)
-	i = read_byte << 8
+	i = read_byte() << 8
 	addrDec()
 	i |= read_byte()
 	return i
