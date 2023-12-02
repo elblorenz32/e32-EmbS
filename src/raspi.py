@@ -119,19 +119,19 @@ def addrDec():
 	setAddr(address-1)
 	address -= 1
 
-def write_byte(data, addr=None):
+def write_byte(value, addr=None):
 	'''
 	Write a byte to the RAM-Chip.
 
-	:param data: The byte to be written.
-	:type data: int
+	:param value: The byte to be written.
+	:type value: int
 	:param addr: The address to write to. If not set, the current address will be used. (MAY BE OVERWRITTEN BY ARDUINO!)
 	:type addr: int
 	:return: None
 	'''
 	if addr != None:
 		setAddr(addr)
-	data.port = bitfield(data)
+	data.port = bitfield(value)
 	GPIO.output(we, GPIO.LOW)
 	GPIO.output(oe, GPIO.HIGH)
 	GPIO.output(we, GPIO.HIGH)
