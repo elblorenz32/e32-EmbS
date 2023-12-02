@@ -132,9 +132,13 @@ def write_byte(value, addr=None):
 	if addr != None:
 		setAddr(addr)
 	data.port = bitfield(value)
+	GPIO.setup(we, GPIO.OUT)
+	GPIO.setup(oe, GPIO.OUT)
 	GPIO.output(we, GPIO.LOW)
 	GPIO.output(oe, GPIO.HIGH)
 	GPIO.output(we, GPIO.HIGH)
+	GPIO.setup(we, GPIO.IN)
+	GPIO.setup(oe, GPIO.IN)
 
 def write_int(data, addr=None):
 	if addr != None:
@@ -168,10 +172,14 @@ def read_byte(addr=None):
 	"""
 	if addr != None:
 		setAddr(addr)
+	GPIO.setup(we, GPIO.OUT)
+	GPIO.setup(oe, GPIO.OUT)
 	GPIO.output(we, GPIO.HIGH)
 	GPIO.output(oe, GPIO.LOW)
 	res = debitfield(data.port)
 	GPIO.output(oe, GPIO.HIGH)
+	GPIO.setup(we, GPIO.IN)
+	GPIO.setup(oe, GPIO.IN)
 	return res
 
 def read_int(addr=None):
