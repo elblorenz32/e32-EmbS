@@ -3,6 +3,7 @@ import random
 import time
 from pcf8574 import PCF8574
 import RPi.GPIO as GPIO
+import datetime
 GPIO.setmode(GPIO.BOARD)
 
 json_str = """
@@ -75,24 +76,6 @@ def debitfield(arr):
 	for bit in arr:
 		out = (out << 1) | bit
 	return out
-
-def blockI2C():
-	'''
-	Blocks the I2C bus.
-
-	:return: None
-	'''
-	GPIO.output(meBlockUno, GPIO.HIGH)
-	time.sleep(0.01)
-	current = second()
-	while isI2CBlocked():
-		time.sleep(0.01)
-		if second() - current > 10:
-			GPIO.output(meBlockUno, GPIO.LOW)
-			time.sleep(0.5)
-			GPIO.output(meBlockUno, GPIO.HIGH)
-			current = second()
-	return
 	
 def isI2CBlocked():
 	'''
@@ -102,6 +85,24 @@ def isI2CBlocked():
 	:rtype: bool
 	'''
 	return GPIO.input(unoBlockMe)
+
+def blockI2C():
+	'''
+	Blocks the I2C bus.
+
+	:return: None
+	'''
+	GPIO.output(meBlockUno, GPIO.HIGH)
+	time.sleep(0.01)
+	current = datetime.now().second()
+	while isI2CBlocked():
+		time.sleep(0.01)
+		if datetime.now().second() - current > 10:
+			GPIO.output(meBlockUno, GPIO.LOW)
+			time.sleep(0.5)
+			GPIO.output(meBlockUno, GPIO.HIGH)
+			current = datetime.now().second()
+	return
 
 def unblockI2C():
 	'''
