@@ -3,7 +3,7 @@ import random
 import time
 from pcf8574 import PCF8574
 import RPi.GPIO as GPIO
-import datetime
+from datrtime import datetime
 GPIO.setmode(GPIO.BOARD)
 
 json_str = """
@@ -94,7 +94,7 @@ def blockI2C():
 	'''
 	GPIO.output(meBlockUno, GPIO.HIGH)
 	time.sleep(0.01)
-	current = datetime.now().second()
+	current = datetime().second()
 	while isI2CBlocked():
 		time.sleep(0.01)
 		if datetime.now().second() - current > 10:
