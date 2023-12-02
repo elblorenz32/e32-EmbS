@@ -201,6 +201,7 @@ def read_int(addr=None):
 	i = read_byte() << 8
 	addrDec()
 	i |= read_byte()
+	addrInc()
 	return i
 
 def read_str(addr=None, ret=False):
@@ -261,8 +262,8 @@ def main():
 	# 	time.sleep(20)
 	blockI2C()
 	setAddr(1)
-	write_int(2)
-	print(read_int())
+	write_int(0b1010101010101010)
+	print(bin(read_int()))
 	unblockI2C()
 
 if __name__ == "__main__":
