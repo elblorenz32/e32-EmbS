@@ -106,16 +106,18 @@ def setAddr(addr):
 	:param addr: The address to be set.
 	:return: None
 	'''
+	global address
 	addrH.port = bitfield(addr >> 8)
 	addrL.port = bitfield(addr & 0xFF)
-	global address
 	address = addr
 
 def addrInc():
+	global address
 	setAddr(address+1)
 	address += 1
 
 def addrDec():
+	global address
 	setAddr(address-1)
 	address -= 1
 
