@@ -3,7 +3,7 @@ import random
 import time
 from pcf8574 import PCF8574
 import RPi.GPIO as GPIO
-from datrtime import datetime
+from datetime import datetime
 GPIO.setmode(GPIO.BOARD)
 
 json_str = """
