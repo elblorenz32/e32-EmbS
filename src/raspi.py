@@ -62,6 +62,17 @@ def bitfield(n): # len 8 (bytewise)
 	'''
 	return [n >> i & 1 for i in range(7, -1, -1)]
 
+def debitfield(arr):
+	'''
+	Generate the integer value of a bitfield.
+
+	:param arr: The bitfield to convert.
+	:type arr: list[int]
+	:return: The integer value of the bitfield.
+	:rtype: int
+	'''
+	return int(Str([].join(arr)), 2)
+
 def blockI2C():
 	'''
 	Blocks the I2C bus.
@@ -87,17 +98,6 @@ def unblockI2C():
 	:return: None
 	'''
 	GPIO.output(meBlockUno, GPIO.LOW)
-
-def debitfield(arr):
-	'''
-	Generate the integer value of a bitfield.
-
-	:param arr: The bitfield to convert.
-	:type arr: list[int]
-	:return: The integer value of the bitfield.
-	:rtype: int
-	'''
-	return int(''.join(arr), 2)
 
 def setAddr(addr):
 	'''
