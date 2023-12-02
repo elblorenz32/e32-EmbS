@@ -71,8 +71,10 @@ def debitfield(arr):
 	:return: The integer value of the bitfield.
 	:rtype: int
 	'''
-	res = 0
-	return (res = (res << 1) | bit for bit in arr)
+	out = 0
+	for bit in arr:
+		out = (out << 1) | bit
+	return out
 
 def blockI2C():
 	'''
