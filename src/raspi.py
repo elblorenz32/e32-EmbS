@@ -94,14 +94,14 @@ def blockI2C():
 	'''
 	GPIO.output(meBlockUno, GPIO.HIGH)
 	time.sleep(0.01)
-	current = datetime.now().second()
+	current = datetime.now().second
 	while isI2CBlocked():
 		time.sleep(0.01)
-		if datetime.now().second() - current > 10:
+		if datetime.now().second - current > 10:
 			GPIO.output(meBlockUno, GPIO.LOW)
 			time.sleep(0.5)
 			GPIO.output(meBlockUno, GPIO.HIGH)
-			current = datetime.now().second()
+			current = datetime.now().second
 	return
 
 def unblockI2C():
