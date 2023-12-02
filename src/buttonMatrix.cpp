@@ -2,11 +2,12 @@
 
 namespace e32 {
 	class button_matrix {
-	public:
+	private:
+		char facing = 'U';
 		int rows[4] = {7, 8, 9, 10};
 		int cols[4] = {6, 5, 4, 3};
+	public:
 		int buttons[4][4];
-		char facing = 'U';
 		button_matrix() {}
 		button_matrix(int* new_rows, int* new_cols) {
 			if (sizeof(new_rows)/sizeof(int) == 4 && sizeof(new_cols)/sizeof(int) == 4) {
@@ -127,69 +128,66 @@ namespace e32 {
 					flip(false);
 					break;
 				case 'L':
-					memcpy(temp, rows, sizeof(rows));
-					memcpy(rows, cols, sizeof(cols));
-					memcpy(cols, temp, sizeof(temp));
+					rotate('R');
+					rotate('L');
 					break;
 				case 'D':
-					flip(false);
+					rotate('R');
+					rotate('D');
 					break;
 				}
 				break;
 			case 'R':
 				switch (goal) {
-				case 'U':
-					memcpy(temp, rows, sizeof(rows));
-					memcpy(rows, cols, sizeof(cols));
-					memcpy(cols, temp, sizeof(temp));
-					flip(true);
-					break;
-				case 'L':
-					flip(false);
-					break;
 				case 'D':
 					memcpy(temp, rows, sizeof(rows));
 					memcpy(rows, cols, sizeof(cols));
 					memcpy(cols, temp, sizeof(temp));
 					flip(true);
+					break;
+				case 'U':
+					rotate('D');
+					rotate('U');
+					break;
+				case 'L':
+					rotate('D');
+					rotate('L');
 					break;
 				}
 				break;
 			case 'D':
 				switch (goal) {
-				case 'U':
-					flip(false);
-					break;
 				case 'L':
 					memcpy(temp, rows, sizeof(rows));
 					memcpy(rows, cols, sizeof(cols));
 					memcpy(cols, temp, sizeof(temp));
 					flip(true);
 					break;
+				case 'U':
+					rotate('L');
+					rotate('U');
+					break;
 				case 'R':
-					memcpy(temp, rows, sizeof(rows));
-					memcpy(rows, cols, sizeof(cols));
-					memcpy(cols, temp, sizeof(temp));
-					flip(true);
+					rotate('L');
+					rotate('R');
 					break;
 				}
 				break;
 			case 'L':
 				switch (goal) {
-				case 'R':
-					flip(false);
-					break;
 				case 'U':
 					memcpy(temp, rows, sizeof(rows));
 					memcpy(rows, cols, sizeof(cols));
 					memcpy(cols, temp, sizeof(temp));
 					flip(true);
 					break;
+				case 'R':
+					rotate('U');
+					rotate('R');
+					break;
 				case 'D':
-					memcpy(temp, rows, sizeof(rows));
-					memcpy(rows, cols, sizeof(cols));
-					memcpy(cols, temp, sizeof(temp));
-					flip(false);
+					rotate('U');
+					rotate('D');
 					break;
 				}
 				break;

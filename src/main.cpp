@@ -12,24 +12,163 @@ Ram ram; // MUSS noch initialisiert werden!!
 byte count = 0;
 int addr = 0;
 LiquidCrystal_I2C lcd(0x27, 16, 2); // LCD: 16 Zeichen in 2 Zeilen, HEX-Adresse 0x27
+String lcd_text[] = {"", ""};
+long last_lcd_update = 0;
+bool clear_lcd = false;
+int cursor_pos[2] = {0, 0};
+String lcd_pos = "main";
+int lcd_scroll = 0;
 
 button_matrix matrix;
+int up[4] {
+	0b0110,
+	0b0000,
+	0b0000,
+	0b0000
+};
+int down[4] {
+	0b0000,
+	0b0000,
+	0b0000,
+	0b0110
+};
+int left[4] {
+	0b0000,
+	0b1000,
+	0b1000,
+	0b0000
+};
+int right[4] {
+	0b0000,
+	0b0001,
+	0b0001,
+	0b0000
+};
+int ok[4] {
+	0b0000,
+	0b0110,
+	0b0110,
+	0b0000
+};
+int back[4] {
+	0b0000,
+	0b0000,
+	0b0000,
+	0b1000
+};
 
-void setup()
-{
-	Serial.begin(9600);
-	ram = Ram(0x20, 0x21, 0x22, 12, 13, 0); // initialisierung RAM
-	lcd.init();							  // initialisierung LCD
-	lcd.backlight();					  // Hintergrundbeleuchtung einschalten (lcd.noBacklight(); schaltet die Beleuchtung aus).
-	matrix = button_matrix();
-	matrix.rotate('D');
-	//matrix.rotate('U');
-	// U->L, L->D, D->R, R->U
-	// U->D, D->U
-	// R->L, L->R
+int num_stops;
+String* stops;
+String ram_command = "";
+
+enum events {
+	null,
+	RAM_READ,
+	BUTTON_INPUT,
+	DISPLAY_OUTPUT
+};
+
+events event_queue[3] {null, null, null};
+
+void push_event(events event) {
+	for (int i = 0; i < 3; i++) {
+		if (event_queue[i] == event) {
+			return;
+		}
+		if (event_queue[i] == null) {
+			event_queue[i] = event;
+			return;
+		}
+	}
 }
 
+void button_event() {
+	// TODO
+}
 
+void display_event() {
+	
+	if (ram.isI2CBlocked() || millis() - last_lcd_update < 100) {
+		push_event(DISPLAY_OUTPUT);
+		return;
+	}
+	ram.blockI2C();
+	/*if (clear_lcd) {
+		lcd.clear();
+		clear_lcd = false;
+	}
+	if (lcd_pos = "main") {
+		lcd.setCursor(0, 0);
+		lcd_text[0] = stops[lcd_scroll%num_stops];
+		lcd.print(lcd_text[0]);
+		lcd.setCursor(0, 1);
+		lcd_text[1] = stops[(lcd_scroll+1)%num_stops];
+		lcd.print(lcd_text[1]);
+	}*/
+	ram.unblockI2C();
+}
+
+void ram_event() {
+	if (ram.isI2CBlocked()) {
+		push_event(RAM_READ);
+		return;
+	}
+	ram.blockI2C();
+	Serial.println(ram_command.equals("#stops"));
+	if (ram_command.equals("#stops")) {
+		ram.setAddr(1);
+		num_stops = ram.read_int();
+		Serial.println(num_stops);
+		if (num_stops == 0) { // no stops --> abort (would leave stops[] uninitialized)
+			push_event(RAM_READ);
+			ram.unblockI2C();
+			Serial.println("no stops");
+			return;
+		}
+		ram_command = ""; // done
+	}
+	else if (ram_command == "stops") {
+		stops = ram.get_stops();
+		ram_command = ""; // done
+	}
+	Serial.println(ram_command);
+	ram.unblockI2C();
+}
+
+void event_handler() {
+	events event = event_queue[0];
+	event_queue[0] = event_queue[1];
+	event_queue[1] = event_queue[2];
+	event_queue[2] = null;
+	Serial.println(event);
+	switch (event) {
+	case RAM_READ:
+		Serial.println("RAM_READ");
+		ram_event();
+		break;
+	case BUTTON_INPUT:
+		button_event();
+		break;
+	case DISPLAY_OUTPUT:
+		display_event();
+		break;
+	case null:
+		break;
+	default:
+		break;
+	}
+	return;
+}
+
+/**
+ * Displays the runtime on the LCD screen with the specified precision.
+ *
+ * @param precision number of time precicion steps (hh, mm, ss, ms) accepts 1, 2 or 3, hours will always be displayed, default is 3
+ *
+ * @return void
+ *
+ * @throws None
+ */
 void lcd_time(short precision = 3) {
 	lcd.setCursor(0, 0); // Hier wird die Position des ersten Zeichens festgelegt. In diesem Fall bedeutet (0,0) das erste Zeichen in der ersten Zeile.
 	int h = ((millis() / 1000) / 60) / 60;
@@ -71,22 +210,43 @@ void lcd_time(short precision = 3) {
 	}
 }
 
+void setup()
+{
+	Serial.begin(9600);
+	ram = Ram(0x20, 0x21, 0x22, 12, 13, 0); // initialisierung RAM
+	ram.blockI2C();
+	ram.setAddr(1);
+	ram.write_int(0);
+	ram.unblockI2C();
+	lcd.init();							  // initialisierung LCD
+	lcd.backlight();					  // Hintergrundbeleuchtung einschalten (lcd.noBacklight(); schaltet die Beleuchtung aus).
+	matrix = button_matrix();
+	ram_command = "#stops";
+	push_event(RAM_READ);
+}
+
+
 void loop()
 {
-	Serial.println();
-	int button_group[4] = {
-		0b1111,
-		0b0000,
-		0b0100,
-		0b1001
-	};
-	Serial.println(matrix.read_any(button_group) + String(matrix.facing));
-	//Serial.println(matrix.read_button(0, 0) + String(matrix.rows[0]) + String(matrix.cols[0]));
-	//Serial.println(matrix.read_button(0, 1) + String(matrix.rows[0]) + String(matrix.cols[1]));
-	delay(1000);
-
-	ram.write_string("Hello World", true);
-	ram.addrInc();
-
+	Serial.println(ram_command);
+	if (!ram_command.equals("#stops")) {
+		if(lcd_pos == "main") {
+			ram_command = "stops";
+			push_event(RAM_READ);
+			clear_lcd = true;
+			push_event(DISPLAY_OUTPUT);
+		}
+		if (matrix.read_any(up)) {
+			lcd_scroll++;
+			clear_lcd = true;
+			push_event(DISPLAY_OUTPUT);
+		}
+		if (matrix.read_any(down)) {
+			lcd_scroll--;
+			clear_lcd = true;
+			push_event(DISPLAY_OUTPUT);
+		}
+	}
+	event_handler();
 	lcd_time(2);
 }

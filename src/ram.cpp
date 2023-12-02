@@ -2,6 +2,9 @@
 #include <PCF8574.h>
 
 class Ram{
+private:
+	short me_block_pi = 2;
+	short pi_block_me = 11;
 public:
 	int debug_lvl; //0->no Debug; 1->simple Debug; 2->more Debug; 3->verbose Debug; negativ->einzeln reserviert
 	PCF8574 addrH, addrL, data;
@@ -192,4 +195,113 @@ public:
 		write_byte(lowByte(value));
 		addrInc();
 	}
+
+	/**
+	 * Retrieves an array of stops. From the RAM-chip.
+	 *
+	 * @return a pointer to a String array containing the stops
+	 */
+	String* get_stops()	{
+		int count = read_int(1);
+		String stops[count];
+		for (int i = 0; i < count; i++) {
+			setAddr(i*34+2);
+			stops[i] = read_string(true);
+		}
+		return stops;
+	}
+
+	/**
+	 * Retrieves an array of routes based on the given stop.
+	 *
+	 * @param stop the stop to retrieve routes for
+	 *
+	 * @return an array of routes
+	 */
+	int* get_Routes(String stop) {
+		setAddr(1);
+		int i = 0;
+		int skips = 0;
+		int num_routes = 0;
+		int count_stops = read_int();
+		while (read_string() != stop) {
+			addrInc();
+			skips += read_int();
+			num_routes = read_int(); //Will stop at actual stop
+			i++;
+			setAddr(i*34+2);
+		} 
+		setAddr((count_stops*34+1)+(4*skips)); //hopefully, this works --> Structure: (Header-End)+(Footer-Somwhere)
+		addrInc();
+		addrInc(); // It's 2 bytes per int
+		int routes[num_routes];
+		for (int j = 0; j < num_routes; j++) {
+			routes[j] = read_int();
+			addrInc();
+			addrInc(); // Route int
+			addrInc();
+			addrInc(); // delay int
+		}
+		return routes;
+	}
+
+	/**
+	 * Get the delay for a specific stop and route.
+	 *
+	 * @param stop the name of the stop
+	 * @param route the route number
+	 *
+	 * @return the delay for the specified stop and route, or -1 if not found
+	 */
+	int get_delay(String stop, int route) {
+		setAddr(1);
+		int i = 0;
+		int skips = 0;
+		int num_routes = 0;
+		int count_stops = read_int();
+		while (read_string() != stop) {
+			addrInc();
+			skips += read_int();
+			num_routes = read_int(); //Will stop at actual stop
+			i++;
+			setAddr(i*34+2);
+		} 
+		setAddr((count_stops*34+1)+(4*skips)); //hopefully, this works --> Structure: (Header-End)+(Footer-Somwhere)
+		addrInc();
+		addrInc(); // It's 2 bytes per int
+		int delay;
+		for (int j = 0; j < num_routes; j++) {
+			if (route==read_int()) {
+				addrInc();
+				addrInc(); // Route int
+				delay = read_int();
+				return delay;
+			}
+		}
+		return -1;
+	}
+
+	void blockI2C() {
+		pinMode(me_block_pi, OUTPUT);
+		digitalWrite(me_block_pi, HIGH);
+		do {
+			delay(10);
+			Serial.println("ok");
+		} while (isI2CBlocked());
+	}
+
+	void unblockI2C() {
+		pinMode(me_block_pi, OUTPUT);
+		digitalWrite(me_block_pi, LOW);
+	}
+
+	bool isI2CBlocked() {
+		pinMode(pi_block_me, INPUT);
+		if (digitalRead(pi_block_me) == HIGH) {
+			return true;
+			Serial.println("I2C blocked");
+		}
+		return false;
+	}
+
 };
