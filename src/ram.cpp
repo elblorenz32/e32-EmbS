@@ -286,7 +286,6 @@ public:
 		//digitalWrite(me_block_pi, HIGH);
 		do {
 			delay(10);
-			Serial.println("ok");
 		} while (isI2CBlocked());
 	}
 

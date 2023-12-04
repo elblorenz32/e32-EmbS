@@ -270,6 +270,7 @@ def pushToRAM():
 			addrInc()
 			write_int(delay())
 			addrInc()
+	print(read_int(1))
 	unblockI2C() # never forget to unblock the I2C bus!
 
 def main():

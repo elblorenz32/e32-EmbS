@@ -89,6 +89,7 @@ void button_event() {
 void display_event() {
 	
 	if (ram.isI2CBlocked() || millis() - last_lcd_update < 100) {
+		last_lcd_update = millis();
 		push_event(DISPLAY_OUTPUT);
 		return;
 	}
