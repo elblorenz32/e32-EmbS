@@ -130,15 +130,11 @@ def setAddr(addr):
 
 def addrInc():
 	global address
-	print("Old address:", address, end=" ")
 	setAddr(address+1)
-	print("New address:", address)
-	#address += 1
 
 def addrDec():
 	global address
 	setAddr(address-1)
-	address -= 1
 
 def write_byte(value, addr=None):
 	'''
