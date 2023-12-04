@@ -86,7 +86,7 @@ def isI2CBlocked():
 	:return: True if the I2C bus is blocked, False otherwise.
 	:rtype: bool
 	'''
-	return false # GPIO.input(unoBlockMe)
+	return False # GPIO.input(unoBlockMe)
 
 def blockI2C():
 	'''
