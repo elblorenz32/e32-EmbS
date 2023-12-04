@@ -263,7 +263,7 @@ def pushToRAM():
 		write_int(len(json_data.get(haltestelle)))
 		addrInc()
 	for haltestelle in haltestellen: # data
-		for linie in haltestelle:
+		for linie in json.data.get(haltestelle):
 			write_int(int(linie))
 			addrInc()
 			write_int(delay())
