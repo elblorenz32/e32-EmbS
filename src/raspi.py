@@ -274,6 +274,7 @@ def main():
 	while True:
 		pushToRAM()
 		time.sleep(20)
+		print("done!")
 	# blockI2C()
 	# setAddr(1)
 	# write_str("test", ret=False)
