@@ -258,7 +258,7 @@ def pushToRAM():
 	write_int(len(haltestellen))
 	addrInc()
 	for haltestelle in haltestellen: # header
-		write_str(json_data.get(haltestelle)[0].ljust(32), ret=False)
+		write_str(str(json_data.get(haltestelle)[0]).ljust(32), ret=False)
 		addrInc()
 		write_int(len(json_data.get(haltestelle)))
 		addrInc()
