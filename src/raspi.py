@@ -177,7 +177,7 @@ def write_str(data, addr=None, ret=False):
 	if addr != None:
 		setAddr(addr)
 	for char in data:
-		write_int(ord(char))
+		write_byte(ord(char))
 		addrInc()
 	write_byte(0)
 	if ret == True:
