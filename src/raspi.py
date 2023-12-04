@@ -264,7 +264,7 @@ def pushToRAM():
 		addrInc()
 	for haltestelle in haltestellen: # data
 		for linie in haltestelle:
-			write_int(linie)
+			write_int(int(linie))
 			addrInc()
 			write_int(delay())
 			addrInc()
