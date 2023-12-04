@@ -130,8 +130,10 @@ def setAddr(addr):
 
 def addrInc():
 	global address
+	print("Old address:", address, end=" ")
 	setAddr(address+1)
 	address += 1
+	print("New address:", address)
 
 def addrDec():
 	global address
@@ -175,7 +177,7 @@ def write_str(data, addr=None, ret=False):
 	if addr != None:
 		setAddr(addr)
 	for char in data:
-		write_byte(ord(char))
+		write_int(ord(char))
 		addrInc()
 	write_byte(0)
 	if ret == True:
