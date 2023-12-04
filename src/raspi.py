@@ -256,7 +256,8 @@ def pushToRAM():
 	setAddr(0)
 	addrInc() # prevent `write_int` from writing to address -1 (bad)
 	write_int(len(haltestellen))
-	print(len(haltestellen))
+	setAddr(1)
+	print(read_int(1))
 	addrInc()
 	for haltestelle in haltestellen: # header
 		write_str(str(json_data.get(haltestelle)[0]).ljust(32), ret=False)
@@ -270,7 +271,6 @@ def pushToRAM():
 			addrInc()
 			write_int(delay())
 			addrInc()
-	print(read_int(1))
 	unblockI2C() # never forget to unblock the I2C bus!
 
 def main():
