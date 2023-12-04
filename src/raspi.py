@@ -158,7 +158,7 @@ def write_byte(value, addr=None):
 	GPIO.output(we, GPIO.HIGH)
 	#GPIO.setup(we, GPIO.IN)
 	#GPIO.setup(oe, GPIO.IN)
-	print("wrote", bin(value), "to", addr)
+	print("wrote", bin(value), "to", address)
 
 def write_int(data, addr=None):
 	if addr != None:
