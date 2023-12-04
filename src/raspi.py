@@ -257,7 +257,7 @@ def pushToRAM():
 	addrInc() # prevent `write_int` from writing to address -1 (bad)
 	write_int(len(haltestellen))
 	setAddr(1)
-	print(read_int(1))
+	print(read_int())
 	addrInc()
 	for haltestelle in haltestellen: # header
 		write_str(str(json_data.get(haltestelle)[0]).ljust(32), ret=False)
