@@ -156,7 +156,7 @@ def write_byte(value, addr=None):
 	GPIO.output(we, GPIO.HIGH)
 	#GPIO.setup(we, GPIO.IN)
 	#GPIO.setup(oe, GPIO.IN)
-	print("wrote", bin(value), "to", address)
+	print("wrote", bitfield(value), "to", address)
 
 def write_int(data, addr=None):
 	if addr != None:
@@ -197,8 +197,8 @@ def read_byte(addr=None):
 	res = debitfield(data.port)
 	print("read", bin(res), "from", address)
 	GPIO.output(oe, GPIO.HIGH)
-	GPIO.setup(we, GPIO.IN)
-	GPIO.setup(oe, GPIO.IN)
+	#GPIO.setup(we, GPIO.IN)
+	#GPIO.setup(oe, GPIO.IN)
 	return res
 
 def read_int(addr=None):
