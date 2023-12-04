@@ -173,7 +173,7 @@ def write_str(data, addr=None, ret=False):
 	if addr != None:
 		setAddr(addr)
 	for char in data:
-		write_byte(ord(char) & 0xFF)
+		write_byte(ord(char))
 		addrInc()
 	write_byte(0)
 	if ret == True:
@@ -287,6 +287,11 @@ def main():
 	write_int(0b1010101010101010)
 	setAddr(0)
 	print(bin(read_int()))
+	
+	setAddr(0)
+	write_str("test", ret=True)
+	setAddr(0)
+	print(read_str(ret=True))
 	unblockI2C()
 
 if __name__ == "__main__":
