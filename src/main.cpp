@@ -93,7 +93,7 @@ void display_event() {
 		return;
 	}
 	ram.blockI2C();
-	/*if (clear_lcd) {
+	if (clear_lcd) {
 		lcd.clear();
 		clear_lcd = false;
 	}
@@ -104,18 +104,18 @@ void display_event() {
 		lcd.setCursor(0, 1);
 		lcd_text[1] = stops[(lcd_scroll+1)%num_stops];
 		lcd.print(lcd_text[1]);
-	}*/
+	}
 	ram.unblockI2C();
 }
 
 void ram_event() {
 	if (ram.isI2CBlocked()) {
+		Serial.println("1");
 		push_event(RAM_READ);
 		return;
 	}
 	ram.blockI2C();
-	Serial.println(ram_command.equals("#stops"));
-	if (ram_command.equals("#stops")) {
+	if (ram_command == "#stops") {
 		ram.setAddr(1);
 		num_stops = ram.read_int();
 		Serial.println(num_stops);
@@ -125,11 +125,13 @@ void ram_event() {
 			Serial.println("no stops");
 			return;
 		}
+		Serial.println("3");
 		ram_command = ""; // done
 	}
 	else if (ram_command == "stops") {
-		stops = ram.get_stops();
+		ram.get_stops(stops);
 		ram_command = ""; // done
+		Serial.println("4");
 	}
 	Serial.println(ram_command);
 	ram.unblockI2C();
@@ -212,7 +214,6 @@ void lcd_time(short precision = 3) {
 
 void setup()
 {
-	Wire.setClock(100000);
 	Serial.begin(9600);
 	ram = Ram(0x20, 0x21, 0x22, 12, 13, 0); // initialisierung RAM
 	ram.blockI2C();

@@ -202,14 +202,13 @@ public:
 	 *
 	 * @return a pointer to a String array containing the stops
 	 */
-	String* get_stops()	{
+	String* get_stops(String* stopsParam)	{
 		int count = read_int(1);
-		String stops[count];
 		for (int i = 0; i < count; i++) {
 			setAddr(i*34+2);
-			stops[i] = read_string(true);
+			stopsParam[i] = read_string(true);
 		}
-		return stops;
+		return stopsParam;
 	}
 
 	/**
@@ -283,8 +282,8 @@ public:
 	}
 
 	void blockI2C() {
-		pinMode(me_block_pi, OUTPUT);
-		digitalWrite(me_block_pi, HIGH);
+		//pinMode(me_block_pi, OUTPUT);
+		//digitalWrite(me_block_pi, HIGH);
 		do {
 			delay(10);
 			Serial.println("ok");
@@ -292,15 +291,15 @@ public:
 	}
 
 	void unblockI2C() {
-		pinMode(me_block_pi, OUTPUT);
-		digitalWrite(me_block_pi, LOW);
+		//pinMode(me_block_pi, OUTPUT);
+		//digitalWrite(me_block_pi, LOW);
 	}
 
 	bool isI2CBlocked() {
 		pinMode(pi_block_me, INPUT);
 		if (digitalRead(pi_block_me) == HIGH) {
-			exit(0); // halts the program, will be reset by Raspberry PI, necessary for RPi to use I2C bus
 			Serial.println("I2C blocked");
+			exit(0); // halts the program, will be reset by Raspberry PI, necessary for RPi to use I2C bus
 			return true; // targeted behaviour if things would jus work on the hardware level
 		}
 		return false;
