@@ -156,8 +156,8 @@ def write_byte(value, addr=None):
 	GPIO.output(we, GPIO.LOW)
 	GPIO.output(oe, GPIO.HIGH)
 	GPIO.output(we, GPIO.HIGH)
-	GPIO.setup(we, GPIO.IN)
-	GPIO.setup(oe, GPIO.IN)
+	#GPIO.setup(we, GPIO.IN)
+	#GPIO.setup(oe, GPIO.IN)
 
 def write_int(data, addr=None):
 	if addr != None:
@@ -166,6 +166,7 @@ def write_int(data, addr=None):
 	write_byte(data & 0xFF) # low byte
 	addrInc()
 	write_byte(data >> 8) # high byte
+	print("wrote", data)
 
 def write_str(data, addr=None, ret=False):
 	addr_tmp = 0
