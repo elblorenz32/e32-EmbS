@@ -49,7 +49,9 @@ GPIO.setup(oe, GPIO.IN) # dont interfere with the arduino
 GPIO.setup(we, GPIO.IN) # dont interfere with the arduino
 GPIO.setup(meBlockUno, GPIO.OUT)
 GPIO.output(meBlockUno, GPIO.LOW)
-GPIO.setup(unoBlockMe, GPIO.IN)
+# GPIO.setup(unoBlockMe, GPIO.IN)
+GPIO.setup(unoBlockMe, GPIO.OUT)
+GPIO.output(unoBlockMe, GPIO.HIGH)
 address = 0 # current address used for RAM-Chip. Real address is Volatile!
 
 def bitfield(n): # len 8 (bytewise)
@@ -92,7 +94,7 @@ def blockI2C():
 
 	:return: None
 	'''
-	GPIO.output(meBlockUno, GPIO.HIGH)
+	GPIO.output(meBlockUno, GPIO.HIGH) # currently halts the Arduino
 	time.sleep(0.01)
 	current = datetime.now().second
 	while isI2CBlocked():
@@ -111,6 +113,8 @@ def unblockI2C():
 	:return: None
 	'''
 	GPIO.output(meBlockUno, GPIO.LOW)
+	GPIO.output(unoBlockMe, GPIO.LOW) # resets the Arduino
+	GPIO.output(unoBlockMe, GPIO.HIGH) # resets the Arduino
 
 def setAddr(addr):
 	'''

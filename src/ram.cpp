@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <PCF8574.h>
+#include <Wire.h>
 
 class Ram{
 private:
@@ -298,8 +299,9 @@ public:
 	bool isI2CBlocked() {
 		pinMode(pi_block_me, INPUT);
 		if (digitalRead(pi_block_me) == HIGH) {
-			return true;
+			exit(0); // halts the program, will be reset by Raspberry PI, necessary for RPi to use I2C bus
 			Serial.println("I2C blocked");
+			return true; // targeted behaviour if things would jus work on the hardware level
 		}
 		return false;
 	}

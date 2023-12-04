@@ -212,14 +212,15 @@ void lcd_time(short precision = 3) {
 
 void setup()
 {
+	Wire.setClock(100000);
 	Serial.begin(9600);
 	ram = Ram(0x20, 0x21, 0x22, 12, 13, 0); // initialisierung RAM
 	ram.blockI2C();
 	ram.setAddr(1);
 	ram.write_int(0);
-	ram.unblockI2C();
 	lcd.init();							  // initialisierung LCD
 	lcd.backlight();					  // Hintergrundbeleuchtung einschalten (lcd.noBacklight(); schaltet die Beleuchtung aus).
+	ram.unblockI2C();
 	matrix = button_matrix();
 	ram_command = "#stops";
 	push_event(RAM_READ);
@@ -248,5 +249,8 @@ void loop()
 		}
 	}
 	event_handler();
+	ram.blockI2C();
 	lcd_time(2);
+	delay(1);
+	ram.unblockI2C();
 }
