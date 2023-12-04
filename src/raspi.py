@@ -194,7 +194,7 @@ def read_byte(addr=None):
 	GPIO.setup(oe, GPIO.OUT)
 	GPIO.output(we, GPIO.HIGH)
 	GPIO.output(oe, GPIO.LOW)
-	res = debitfield(data.port())
+	res = debitfield(data.port)
 	print("read", bin(res), "from", address)
 	GPIO.output(oe, GPIO.HIGH)
 	GPIO.setup(we, GPIO.IN)
