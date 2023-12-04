@@ -110,7 +110,6 @@ void display_event() {
 
 void ram_event() {
 	if (ram.isI2CBlocked()) {
-		Serial.println("1");
 		push_event(RAM_READ);
 		return;
 	}
@@ -118,22 +117,22 @@ void ram_event() {
 	if (ram_command == "#stops") {
 		ram.setAddr(1);
 		num_stops = ram.read_int();
-		Serial.println(num_stops);
 		if (num_stops == 0) { // no stops --> abort (would leave stops[] uninitialized)
 			push_event(RAM_READ);
 			ram.unblockI2C();
 			Serial.println("no stops");
 			return;
 		}
-		Serial.println("3");
 		ram_command = ""; // done
 	}
 	else if (ram_command == "stops") {
 		ram.get_stops(stops);
+		clear_lcd = true;
+		lcd_text[0] = stops[lcd_scroll%num_stops];
+		lcd_text[1] = stops[(lcd_scroll+1)%num_stops];
+		push_event(DISPLAY_OUTPUT);
 		ram_command = ""; // done
-		Serial.println("4");
 	}
-	Serial.println(ram_command);
 	ram.unblockI2C();
 }
 
@@ -163,7 +162,7 @@ void event_handler() {
 }
 
 /**
- * Displays the runtime on the LCD screen with the specified precision.
+ * Displays the runtime on the LCD screen with the specified precision.(For Testing Purposes)
  *
  * @param precision number of time precicion steps (hh, mm, ss, ms) accepts 1, 2 or 3, hours will always be displayed, default is 3
  *
@@ -230,7 +229,6 @@ void setup()
 
 void loop()
 {
-	Serial.println(ram_command);
 	if (!ram_command.equals("#stops")) {
 		if(lcd_pos == "main") {
 			ram_command = "stops";
@@ -250,8 +248,4 @@ void loop()
 		}
 	}
 	event_handler();
-	ram.blockI2C();
-	lcd_time(2);
-	delay(1);
-	ram.unblockI2C();
 }

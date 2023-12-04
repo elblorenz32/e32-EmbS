@@ -271,14 +271,14 @@ def pushToRAM():
 	unblockI2C() # never forget to unblock the I2C bus!
 
 def main():
-	# while True:
-	# 	pushToRAM()
-	# 	time.sleep(20)
-	blockI2C()
-	setAddr(1)
-	write_str("test", ret=False)
-	print(read_str(ret=True))
-	unblockI2C()
+	while True:
+		pushToRAM()
+		time.sleep(20)
+	# blockI2C()
+	# setAddr(1)
+	# write_str("test", ret=False)
+	# print(read_str(ret=True))
+	# unblockI2C()
 
 if __name__ == "__main__":
 	main()
