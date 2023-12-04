@@ -218,7 +218,10 @@ void setup()
 	ram = Ram(0x20, 0x21, 0x22, 12, 13, 0); // initialisierung RAM
 	ram.blockI2C();
 	ram.setAddr(1);
-	ram.write_int(0);
+	ram.write_int(1);
+	ram.addrInc();
+	ram.write_string("Alttrachau", true);
+	Serial.print(ram.read_string(true));
 	lcd.init();							  // initialisierung LCD
 	lcd.backlight();					  // Hintergrundbeleuchtung einschalten (lcd.noBacklight(); schaltet die Beleuchtung aus).
 	ram.unblockI2C();
@@ -230,8 +233,8 @@ void setup()
 
 void loop()
 {
-	if (!ram_command.equals("#stops")) {
-		if(lcd_pos == "main") {
+	if (!ram_command.equals("#stops") || 1) {
+		if(lcd_pos == "main" && 0) {
 			ram_command = "stops";
 			push_event(RAM_READ);
 			clear_lcd = true;
@@ -248,5 +251,14 @@ void loop()
 			push_event(DISPLAY_OUTPUT);
 		}
 	}
-	event_handler();
+	//event_handler();
+	ram.write_int(lcd_scroll);
+	Serial.print(lcd_scroll + " ");
+	Serial.println(ram.read_int());
+	lcd.setCursor(0, 1);
+	lcd.print("        ");
+	lcd.setCursor(0, 1);
+	lcd.print(ram.read_int());
+	lcd_time();
+	delay(100);
 }

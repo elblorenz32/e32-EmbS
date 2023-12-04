@@ -281,16 +281,12 @@ def main():
 	# 	time.sleep(20)
 	blockI2C()
 	setAddr(0)
-	write_str("test", ret=True)
+	write_str("test", ret=True)  # Es gibt keinen Grund, warum das nicht funktioniert...
 	setAddr(0)
 	print(read_str(ret=True))
 	write_int(0b1010101010101010)
 	setAddr(0)
 	print(bin(read_int()))
-	
-	setAddr(0)
-	write_str("test", ret=True)
-	setAddr(0)
 	print(read_str(ret=True))
 	unblockI2C()
 
